@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-
+import string
+    
 r = requests.get("http://ufcstats.com/fighter-details/2b93ebd9f5417ad2")
 
 soup = bs(r.content,features="html.parser")
