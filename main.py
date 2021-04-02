@@ -2,19 +2,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import string
-
-def main(fighter):
-
-    # Read DF
-    fightersDF = pd.read_csv('fighters.csv',sep=";")
-
-    # Get the fighter's link
-    link = find_fighter(fighter, fightersDF)
-    
-    # Scrap the link and get his fights
-    fightsDF = scrap_fighter(link)
-
-    return fightsDF
+import sys
 
 def find_fighter(fighter,fightersDF):
     
@@ -34,6 +22,21 @@ def scrap_fighter(link):
     all_infos = [str(element.get_text()).strip() for element in parsed_fighs]
     divided_infos = [all_infos[x:x+3] for x in range(0, len(all_infos),3)]
     df = pd.DataFrame.from_records(divided_infos,columns=["Fighter 1","Fighter 2","Event"])
-    return df
 
-print(main("Charles Oliveira"))
+    return df
+    
+if __name__ == "__main__":
+
+    fighter = sys.argv[1]
+
+    # Read DF
+    fightersDF = pd.read_csv('fighters.csv',sep=";")
+
+    # Get the fighter's link
+    link = find_fighter(fighter, fightersDF)
+    
+    # Scrap the link and get his fights
+    fightsDF = scrap_fighter(link)
+
+    print(fightsDF)
+

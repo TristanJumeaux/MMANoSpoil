@@ -2,25 +2,11 @@ import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import string
-
-
-def main():
-
-    # Get Links of all pages to scrap
-    links = generate_links()
-
-    # Scrap all pages and get names
-    fighters=[]
-    fighters = [fighter.split('|') for link in links for fighter in scrap_link(link) if fighter != "Empty"] 
-
-    # Create DF from result and returns it
-    fightersDF = pd.DataFrame.from_records(fighters,columns=["First Name","Last Name","Link"])
-    
-    fightersDF.to_csv('fighters.csv',index=False,sep=";")
+import sys
 
 
 def generate_links():
-    return["http://ufcstats.com/statistics/fighters?char={}&page=all".format(caracter) for caracter in list(string.ascii_lowercase)]
+    return ["http://ufcstats.com/statistics/fighters?char={}&page=all".format(caracter) for caracter in list(string.ascii_lowercase)]
      
 def scrap_link(link):
     r = requests.get(link)
@@ -48,4 +34,19 @@ def get_names(parsed_fighters_attributes):
 
     return names
 
-main()
+
+if __name__ == "__main__":
+
+     # Get Links of all pages to scrap
+    links = generate_links()
+
+    # Scrap all pages and get names
+    fighters = []
+    fighters = [fighter.split('|') for link in links for fighter in scrap_link(link) if fighter != "Empty"] 
+
+    # Create DF from result and returns it
+    fightersDF = pd.DataFrame.from_records(fighters,columns=["First Name","Last Name","Link"])
+    
+    fightersDF.to_csv('fighters.csv',index=False,sep=";")
+
+    print(" Done ! Everything went perfect. You can now search for fighters. ")
