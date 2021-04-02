@@ -1,18 +1,29 @@
-import requests
-from bs4 import BeautifulSoup as bs
-import pandas as pd
+import requests # pip install requests
+from bs4 import BeautifulSoup as bs # pip install beautifulsoup4
+import pandas as pd # pip install pandas
 import string
 import sys
+from difflib import SequenceMatcher
 
 def find_fighter(fighter,fightersDF):
     
     try:
         link = fightersDF.loc[fightersDF['First Name'].str.upper() + " " + fightersDF['Last Name'].str.upper() == fighter.upper()].Link.values[0]
     except:
-        link = "There must be an error in the figher name !"
+        closest_fighters = find_close_fighter(fighter,fightersDF)
+        if len(closest_fighters == 1) :
+            link = closest_fighters.Link.values[0]
+        else:
+            link = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
 
     return link
-    
+
+def compare_names(df, col1, col2,fighter):
+    return SequenceMatcher(None, df[col1].upper()+" "+df[col2].upper(),fighter.upper()).ratio()
+
+def find_close_fighter(fighter,fightersDF):
+    fightersDF["comp"] = fightersDF.apply(compare_names,args=("First Name","Last Name",fighter),axis=1)
+    return fightersDF.loc[fightersDF["comp"]>0.85]
 
 def scrap_fighter(link):
 
@@ -42,5 +53,6 @@ if __name__ == "__main__":
 
     else : 
         print("There was an error in the fighter name. Please correct !")
+
 
 
