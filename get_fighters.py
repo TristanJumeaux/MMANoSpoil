@@ -7,13 +7,16 @@ import string
 def main():
 
     # Get Links of all pages to scrap
-    #links = generate_links()[0]
-    links = ["http://ufcstats.com/statistics/fighters?char=a&page=all","http://ufcstats.com/statistics/fighters?char=b&page=all"]
-    fighters=[]
-    # Scrap all pages and get names
-    fighters = [fighter for link in links for fighter in scrap_link(link) if fighter != "Empty"] 
+    links = generate_links()[0]
 
-    return fighters
+    # Scrap all pages and get names
+    fighters=[]
+    fighters = [fighter.split('|') for link in links for fighter in scrap_link(link) if fighter != "Empty"] 
+
+    # Create DF from result and returns it
+    fightersDF = pd.DataFrame.from_records(fighters,columns=["First Name","Last Name","Link"])
+    return fightersDF
+
 
 def generate_links():
     return["http://ufcstats.com/statistics/fighters?char={}&page=all".format(caracter) for caracter in list(string.ascii_lowercase)]
@@ -36,7 +39,8 @@ def get_names(parsed_fighters_attributes):
             for attribute in fighter:
                 index+=1
                 if index < 3 : 
-                    name+=attribute.get_text().strip()+" "
+                    name+=attribute.get_text().strip()+" | "
+            name+=fighter[0]['href']+" "
             names.append(name.strip())
         else:
             names.append("Empty")
@@ -45,4 +49,3 @@ def get_names(parsed_fighters_attributes):
 
 res = main()
 print(res)
-
