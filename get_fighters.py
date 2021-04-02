@@ -40,8 +40,8 @@ def get_names(parsed_fighters_attributes):
             for attribute in fighter:
                 index+=1
                 if index < 3 : 
-                    name+=attribute.get_text().strip()+" | "
-            name+=fighter[0]['href']+" "
+                    name+=attribute.get_text().strip()+"|"
+            name+=fighter[0]['href']+""
             names.append(name.strip())
         else:
             names.append("Empty")
