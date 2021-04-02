@@ -7,7 +7,7 @@ import string
 def main():
 
     # Get Links of all pages to scrap
-    links = generate_links()[0]
+    links = generate_links()
 
     # Scrap all pages and get names
     fighters=[]
@@ -15,7 +15,8 @@ def main():
 
     # Create DF from result and returns it
     fightersDF = pd.DataFrame.from_records(fighters,columns=["First Name","Last Name","Link"])
-    return fightersDF
+    
+    fightersDF.to_csv('fighters.csv',index=False,sep=";")
 
 
 def generate_links():
@@ -47,5 +48,4 @@ def get_names(parsed_fighters_attributes):
 
     return names
 
-res = main()
-print(res)
+main()
