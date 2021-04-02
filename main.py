@@ -14,7 +14,7 @@ def find_fighter(fighter,fightersDF):
         if len(closest_fighters == 1) :
             link = closest_fighters.Link.values[0]
         else:
-            link = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
+            link = errorMessage
 
     return link
 
@@ -39,20 +39,20 @@ def scrap_fighter(link):
 if __name__ == "__main__":
 
     fighter = sys.argv[1]
-
+    errorMessage = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
     # Read DF
     fightersDF = pd.read_csv('fighters.csv',sep=";")
 
     # Get the fighter's link
     link = find_fighter(fighter, fightersDF)
     
-    if link != "There must be an error in the figher name !" :
+    if link != errorMessage :
         # Scrap the link and get his fights
         fightsDF = scrap_fighter(link)
         print(fightsDF)
 
     else : 
-        print("There was an error in the fighter name. Please correct !")
+        print(errorMessage)
 
 
 
