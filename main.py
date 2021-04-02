@@ -7,7 +7,7 @@ import sys
 def find_fighter(fighter,fightersDF):
     
     try:
-        link = fightersDF.loc[fightersDF['First Name'] + " " + fightersDF['Last Name'] == fighter].Link.values[0]
+        link = fightersDF.loc[fightersDF['First Name'].str.upper() + " " + fightersDF['Last Name'].str.upper() == fighter.upper()].Link.values[0]
     except:
         link = "There must be an error in the figher name !"
 
@@ -24,7 +24,7 @@ def scrap_fighter(link):
     df = pd.DataFrame.from_records(divided_infos,columns=["Fighter 1","Fighter 2","Event"])
 
     return df
-    
+
 if __name__ == "__main__":
 
     fighter = sys.argv[1]
@@ -35,8 +35,12 @@ if __name__ == "__main__":
     # Get the fighter's link
     link = find_fighter(fighter, fightersDF)
     
-    # Scrap the link and get his fights
-    fightsDF = scrap_fighter(link)
+    if link != "There must be an error in the figher name !" :
+        # Scrap the link and get his fights
+        fightsDF = scrap_fighter(link)
+        print(fightsDF)
 
-    print(fightsDF)
+    else : 
+        print("There was an error in the fighter name. Please correct !")
+
 
