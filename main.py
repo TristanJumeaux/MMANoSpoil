@@ -5,8 +5,20 @@ import string
 import sys
 from difflib import SequenceMatcher
 
-def find_fighter(fighter,fightersDF):
+def find_fighter(fighter:str, fightersDF:pd.DataFrame) -> str:
     
+    """
+    For a given fighter name, find the fighter UFC stats page link.
+    If there's a small error, find the closest fighter name and send back its link.
+    Else, send back an error message.
+
+    Arguments : 
+
+    fighter -- name of the searched fighter (ex : Michael Bisping)
+    fightersDF -- DataFrame of every fighter and a link to scrap to get their fights.
+
+    """
+
     try:
         link = fightersDF.loc[fightersDF['First Name'].str.upper() + " " + fightersDF['Last Name'].str.upper() == fighter.upper()].Link.values[0]
     except:
@@ -18,28 +30,36 @@ def find_fighter(fighter,fightersDF):
 
     return link
 
-def compare_names(df, col1, col2,fighter):
+def compare_names(df:pd.DataFrame, col1:str, col2:str, fighter:str) -> SequenceMatcher:
     return SequenceMatcher(None, df[col1].upper()+" "+df[col2].upper(),fighter.upper()).ratio()
 
-def find_close_fighter(fighter,fightersDF):
+def find_close_fighter(fighter:str, fightersDF:pd.DataFrame) -> pd.DataFrame:
     fightersDF["comp"] = fightersDF.apply(compare_names,args=("First Name","Last Name",fighter),axis=1)
     return fightersDF.loc[fightersDF["comp"]>0.85]
 
-def scrap_fighter(link):
+def scrap_fighter(link:str) -> pd.DataFrame:
 
+    """
+    For a given link, scrap the webpage and return a DataFrame of every fights.
+
+    Arguments : 
+
+    link -- link to scrap
+    
+    """
     r = requests.get(link)
     soup = bs(r.content,features="html.parser")
     parsed_fighs = soup.find_all("a",attrs={"class":"b-link b-link_style_black"},text=True)
     all_infos = [str(element.get_text()).strip() for element in parsed_fighs]
     divided_infos = [all_infos[x:x+3] for x in range(0, len(all_infos),3)]
     df = pd.DataFrame.from_records(divided_infos,columns=["Fighter 1","Fighter 2","Event"])
-
     return df
 
 if __name__ == "__main__":
 
-    fighter = sys.argv[1]
+    fighter = sys.argv[1] # Get fighter to search from an argument passed in command line call
     errorMessage = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
+    
     # Read DF
     fightersDF = pd.read_csv('fighters.csv',sep=";")
 

@@ -3,19 +3,30 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import string
 import sys
+from typing import List
 
 
-def generate_links():
+def generate_links() -> List[str]:
+    """
+    Generate a list with a link to scrap for every letter of the alphabet
+    """
     return ["http://ufcstats.com/statistics/fighters?char={}&page=all".format(caracter) for caracter in list(string.ascii_lowercase)]
      
-def scrap_link(link):
+def scrap_link(link:str):
     r = requests.get(link)
     soup = bs(r.content,features="html.parser")
     parsed_fighters = soup.find_all("tr",attrs={"class":"b-statistics__table-row"}) # Get all fighters informations
     parsed_fighters_attributes = [fighter.find_all("a",attrs={"class":"b-link b-link_style_black"},text=True) for fighter in parsed_fighters] # Create a list of list of fighter first names, last names and surname
     return get_names(parsed_fighters_attributes)
 
-def get_names(parsed_fighters_attributes):
+def get_names(parsed_fighters_attributes) -> List[str]:
+
+    """
+    Take the html content of a page listing every fighters with a last name starting by a specific letter 
+    Ex: HTML page listing every fighter with a last name starting by A.
+    Returns a list of every fighter and their link to personal webpages.
+    """
+
     names = []
     name = "" 
 
