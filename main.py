@@ -60,9 +60,9 @@ if __name__ == "__main__":
     fighter = sys.argv[1] # Get fighter to search from an argument passed in command line call
     
     if len(sys.argv)>=3:
-        no_spoil = sys.argv[2]
+        one_by_one = sys.argv[2]
     else:
-        no_spoil=""
+        one_by_one=""
 
     errorMessage = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
     
@@ -75,9 +75,12 @@ if __name__ == "__main__":
     if link != errorMessage :
         # Scrap the link and get his fights
         fightsDF = scrap_fighter(link)
-        if no_spoil == "":
+        # If the one by one mode isn't activated, print the full career.
+        if one_by_one == "":
             print(fightsDF)
+        # If the one by one mode is activated, print one fight each time the user press enter
         else:
+            print("You are in the one by one mode ! Press enter after each fight displayed to see the following one. \n")
             fight_count = len(fightsDF)
             for i in range(fight_count):
                 if i==0:
@@ -86,10 +89,6 @@ if __name__ == "__main__":
                     print(fightsDF.loc[[fight_count-1-i]].to_string(header=False))
                 input("")
             print("You made it to end !")
-
-
-
-
 
     else : 
         print(errorMessage)
