@@ -58,6 +58,12 @@ def scrap_fighter(link:str) -> pd.DataFrame:
 if __name__ == "__main__":
 
     fighter = sys.argv[1] # Get fighter to search from an argument passed in command line call
+    
+    if len(sys.argv)>=3:
+        no_spoil = sys.argv[2]
+    else:
+        no_spoil=""
+
     errorMessage = "There might be an error in the fighter name and we're not sure about his real identity! Please verify spelling."
     
     # Read DF
@@ -69,7 +75,21 @@ if __name__ == "__main__":
     if link != errorMessage :
         # Scrap the link and get his fights
         fightsDF = scrap_fighter(link)
-        print(fightsDF)
+        if no_spoil == "":
+            print(fightsDF)
+        else:
+            fight_count = len(fightsDF)
+            for i in range(fight_count):
+                if i==0:
+                    print(fightsDF.loc[[fight_count-1-i]])
+                else:
+                    print(fightsDF.loc[[fight_count-1-i]].to_string(header=False))
+                input("")
+            print("You made it to end !")
+
+
+
+
 
     else : 
         print(errorMessage)
