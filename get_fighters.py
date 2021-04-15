@@ -8,7 +8,7 @@ from typing import List
 
 def generate_links() -> List[str]:
     """
-    Generate a list with a link to scrap for every letter of the alphabet
+    Generate a list with a link to scrap for every letter of the alphabet.
     """
     return ["http://ufcstats.com/statistics/fighters?char={}&page=all".format(caracter) for caracter in list(string.ascii_lowercase)]
      
@@ -22,7 +22,7 @@ def scrap_link(link:str):
 def get_names(parsed_fighters_attributes) -> List[str]:
 
     """
-    Take the html content of a page listing every fighters with a last name starting by a specific letter 
+    Take the html content of a page listing every fighters with a last name starting by a specific letter. 
     Ex: HTML page listing every fighter with a last name starting by A.
     Returns a list of every fighter and their link to personal webpages.
     """

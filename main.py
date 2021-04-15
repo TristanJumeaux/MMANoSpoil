@@ -75,6 +75,7 @@ if __name__ == "__main__":
     if link != errorMessage :
         # Scrap the link and get his fights
         fightsDF = scrap_fighter(link)
+
         # If the one by one mode isn't activated, print the full career.
         if one_by_one == "":
             print(fightsDF)
